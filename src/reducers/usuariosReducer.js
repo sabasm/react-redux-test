@@ -3,7 +3,7 @@ import { TRAER_TODOS, LOADING, ERROR } from "../types/usersTypes";
 const initialState = {
   usuarios: [],
   loading: false,
-  error: "",
+  error: ""
 };
 
 export default function usuariosReducer(state = initialState, action) {

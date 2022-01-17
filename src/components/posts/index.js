@@ -3,9 +3,15 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import * as usuariosActions from "../../actions/usuariosActions";
 import * as publicacionesActions from "../../actions/publicacionesActions";
+import Comments from "../comments";
 
 const { traerTodos: usuariosTraerTodos } = usuariosActions;
-const { traerPorId: publicacionesTraerPorId } = publicacionesActions;
+const {
+  traerPorId: publicacionesTraerPorId,
+  abrirCerrar,
+  traerComentarios,
+} = publicacionesActions;
+
 const Posts = (props) => {
   let params = useParams();
   let { key } = params;
@@ -51,6 +57,32 @@ const Posts = (props) => {
     if (usersLoading || !usuarios.length) {
       return <p>Cargando...</p>;
     }
+    function mostrarComentarios(postKey, comKey, comments) {
+      props.abrirCerrar(postKey, comKey);
+      if (!comments.length) {
+        props.traerComentarios(postKey, comKey);
+      }
+    }
+    function mostrarInfo(posts, postsKey) {
+      return posts.map((post, com_key) => {
+        return (
+          <div
+            key={com_key}
+            onClick={() =>
+              mostrarComentarios(postsKey, com_key, post.comentarios)
+            }
+          >
+            <h2>{post.title}</h2>
+            <p>{post.body}</p>
+            {post.abierto ? (
+              <Comments comments={post.comentarios} />
+            ) : (
+              <span>cerrado</span>
+            )}
+          </div>
+        );
+      });
+    }
 
     function displayPosts() {
       if (postsError) {
@@ -66,18 +98,7 @@ const Posts = (props) => {
         return <span>cargando...</span>;
       }
       const { publicaciones_key } = usuarios[key];
-      console.log(
-        "publicaciones[publicaciones_key] = ",
-        publicaciones[publicaciones_key]
-      );
-      return publicaciones[publicaciones_key].map((post,key) => {
-        return (
-          <div key={key}>
-            <h2>{post.title}</h2>
-            <p>{post.body}</p>
-          </div>
-        );
-      });
+      return mostrarInfo(publicaciones[publicaciones_key], publicaciones_key);
     }
 
     return (
@@ -99,6 +120,11 @@ const mapStateToProps = ({ usuariosReducer, publicacionesReducer }) => {
   return { usuariosReducer, publicacionesReducer };
 };
 
-const mapDispatchToProps = { usuariosTraerTodos, publicacionesTraerPorId };
+const mapDispatchToProps = {
+  usuariosTraerTodos,
+  publicacionesTraerPorId,
+  abrirCerrar,
+  traerComentarios,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Posts);

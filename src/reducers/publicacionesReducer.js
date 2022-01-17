@@ -1,14 +1,23 @@
-import { TRAER_POR_USUARIO, LOADING, ERROR } from "../types/postsTypes";
+import {
+  ACTUALIZAR,
+  LOADING,
+  ERROR,
+  COM_ACTUALIZAR,
+  COM_LOADING,
+  COM_ERROR,
+} from "../types/postsTypes";
 
 const initialState = {
   publicaciones: [],
   loading: false,
   error: "",
+  com_loading: false,
+  com_error: "",
 };
 
 export default function publicacionesReducer(state = initialState, action) {
   switch (action.type) {
-    case TRAER_POR_USUARIO:
+    case ACTUALIZAR:
       return {
         ...state,
         publicaciones: action.payload,
@@ -25,6 +34,24 @@ export default function publicacionesReducer(state = initialState, action) {
         ...state,
         error: action.payload,
         loading: false,
+      };
+    case COM_ACTUALIZAR:
+      return {
+        ...state,
+        publicaciones: action.payload,
+        com_loading: false,
+        com_error: "",
+      };
+    case COM_LOADING:
+      return {
+        ...state,
+        com_loading: true,
+      };
+    case COM_ERROR:
+      return {
+        ...state,
+        com_error: action.payload,
+        com_loading: false,
       };
 
     default:
