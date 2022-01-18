@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { connect } from "react-redux";
+
+import { Link } from "react-router-dom";
 import * as tasksActions from "../../actions/tasksActions";
 
 const Tasks = (props) => {
@@ -15,9 +17,9 @@ const Tasks = (props) => {
   //   useEffect(() => {
   //     console.log(tasksReducer.tasks);
   //   }, [tasksReducer]);
-  useEffect(() => {
-    console.log("props = ", props);
-  }, [props]);
+  // useEffect(() => {
+  //   console.log("props = ", props);
+  // }, [props]);
 
   const tasksByUserId = (userId) => {
     const { tasks } = props.tasksReducer;
@@ -51,7 +53,12 @@ const Tasks = (props) => {
     ));
   };
 
-  return <div>{showContent()}</div>;
+  return (
+    <div>
+      <Link to="/tasks/addTask">Agregar tarea</Link>
+      {showContent()}
+    </div>
+  );
 };
 
 const mapStateToProps = ({ tasksReducer }) => {

@@ -1,30 +1,59 @@
-import { GET_TASKS, LOADING, ERROR } from "../types/tasksTypes.js";
+import {
+  GET_TASKS,
+  LOADING,
+  ERROR,
+  FORM_CHANGES,
+  GO_BACK,
+} from "../types/tasksTypes.js";
 
 const initialState = {
   tasks: {},
   loading: false,
-  error: ""
+  error: "",
+  addTask: {
+    completed: false,
+    userId: "",
+    taskTitle: "",
+  },
+  goBack: false,
 };
 
 export default function tasksReducer(state = initialState, action) {
   switch (action.type) {
+    case LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
     case GET_TASKS:
       return {
         ...state,
         tasks: action.payload,
         loading: false,
         error: "",
+        goBack: false,
       };
-    case LOADING:
+    case FORM_CHANGES:
       return {
         ...state,
-        loading: true,
+        addTask: action.payload,
+        loading: false,
+        error: "",
       };
     case ERROR:
       return {
         ...state,
         error: action.payload,
         loading: false,
+        goBack: false,
+      };
+    case GO_BACK:
+      return {
+        ...state,
+        error: "",
+        addTask: initialState.addTask,
+        loading: false,
+        goBack: true,
       };
 
     default:
