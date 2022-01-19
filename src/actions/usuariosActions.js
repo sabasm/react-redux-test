@@ -8,7 +8,7 @@ export const traerTodos = () => async (dispatch) => {
     const respuesta = await axios.get(
       "https://jsonplaceholder.typicode.com/users"
       );
-      console.info("usuarios actions traerTodos axios called");
+      // console.info("usuarios actions traerTodos axios called");
     dispatch({
       type: TRAER_TODOS,
       payload: respuesta.data,

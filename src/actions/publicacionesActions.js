@@ -43,7 +43,7 @@ export const traerPorId = (key) => async (dispatch, getState) => {
     const respuesta = await axios.get(
       `https://jsonplaceholder.typicode.com/posts/?userId=${usuario_id}`
     );
-    console.info("publicaciones actions traerPorId axios called");
+    // console.info("publicaciones actions traerPorId axios called");
 
     const nuevas = respuesta.data.map((publicacion) => ({
       ...publicacion,
@@ -105,7 +105,7 @@ export const traerComentarios =
         "https://jsonplaceholder.typicode.com/comments?postId=" +
           seleccionada.id
       );
-      console.info("traerComentarios axios called");
+      // console.info("traerComentarios axios called");
       const actualizada = {
         ...seleccionada,
         comentarios: respuesta.data,

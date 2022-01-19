@@ -1,13 +1,48 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import * as taskActions from "../../actions/tasksActions";
 
 const AddTask = (props) => {
-  const { addTask, handleFormChanges, postNewTask, error, loading, goBack } =
-    props;
-  const { userId, taskTitle: title } = addTask;
+  const params = useParams();
+  const navigate = useNavigate();
+  const { editUId, taskId } = params;
+
+  const {
+    tasks,
+    addTask,
+    handleFormChanges,
+    setEditTaskData,
+    postNewTask,
+    updateTask,
+    error,
+    loading,
+    goBack,
+  } = props;
+  let { userId, taskTitle: title } = addTask;
   const disabled = !title || !userId || error || loading;
+
+  useEffect(() => {
+    if (Object.keys(tasks).length && editUId && taskId) {
+      let editTask = tasks[editUId][taskId];
+      editTask.taskTitle = editTask.title;
+      setEditTaskData(editTask);
+    } else {
+      !Object.keys(tasks).length &&
+        editUId &&
+        taskId &&
+        navigate(`/tasks/addTask`);
+    }
+    return () => {
+      setEditTaskData({
+        completed: false,
+        id: "",
+        taskTitle: "",
+        title: "",
+        userId: "",
+      });
+    };
+  }, [tasks, editUId, taskId, navigate, setEditTaskData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,18 +51,25 @@ const AddTask = (props) => {
       title,
     };
     delete newTask.taskTitle;
-    await postNewTask(newTask);
+    // console.log("newTask = ", newTask);
+    if (taskId) {
+      await updateTask(newTask);
+    } else {
+      await postNewTask(newTask);
+    }
   };
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     goBack && navigate(`/tasks`);
   }, [goBack, navigate]);
 
+  // useEffect(() => {
+  //   console.log("props = ", props);
+  // }, [props]);
+
   return (
     <div>
-      <h1>Agregar tarea nueva</h1>
+      <h1>{taskId ? "Editar tarea" : "Agregar tarea nueva"}</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="userId">
           Usuario id:
@@ -38,6 +80,7 @@ const AddTask = (props) => {
             value={userId}
             placeholder="ID del usuario"
             onChange={(e) => handleFormChanges(e)}
+            disabled={editUId}
           />
         </label>
         <br />
@@ -54,7 +97,7 @@ const AddTask = (props) => {
         </label>
         <br />
         <button disabled={disabled}>
-          {loading ? "Cargando" : "Agregar"}
+          {loading ? "Cargando" : taskId ? "Guardar" : "Agregar"}
         </button>
         {error && <span>{error}</span>}
       </form>

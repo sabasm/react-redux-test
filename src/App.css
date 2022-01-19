@@ -36,3 +36,18 @@ nav {
   justify-content: space-around;
   text-decoration: none;
 }
+.tasks{
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+}
+.tasks_task{
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px;
+}
+.tasks_task button{
+  margin: 5px;
+}

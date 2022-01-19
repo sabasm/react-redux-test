@@ -2,17 +2,18 @@ import axios from "axios";
 import {
   LOADING,
   GET_TASKS,
+  UPDATE_TASKS,
   ERROR,
   FORM_CHANGES,
   GO_BACK,
 } from "../types/tasksTypes";
 
 export const getTasks = () => async (dispatch) => {
-  console.group("tasksActions / getTasks");
+  //  console.group("tasksActions / getTasks");
   dispatch({
     type: LOADING,
   });
-  console.log("tasks actions getTasks axios called");
+  // console.log("tasks actions getTasks axios called");
   try {
     const respuesta = await axios.get(
       "https://jsonplaceholder.typicode.com/todos"
@@ -39,7 +40,7 @@ export const getTasks = () => async (dispatch) => {
       payload: "Información de tareas no disponible",
     });
   }
-  console.groupEnd();
+  //  console.groupEnd();
 };
 
 export const handleFormChanges = (e) => (dispatch, getState) => {
@@ -80,4 +81,80 @@ export const postNewTask = (task) => async (dispatch, getState) => {
     });
   }
   // console.groupEnd();
+};
+
+export const setEditTaskData = (task) => (dispatch) => {
+  // console.log(task);
+  dispatch({
+    type: ERROR,
+    payload: "",
+  });
+  dispatch({
+    type: FORM_CHANGES,
+    payload: task,
+  });
+};
+
+export const updateTask = (task) => async (dispatch, getState) => {
+  // console.group("tasksActions / updateTask");
+  // console.log("updateTask task = ", task);
+  dispatch({
+    type: LOADING,
+  });
+  // console.log("tasks actions updateTask axios called");
+  try {
+    await axios.put(
+      `https://jsonplaceholder.typicode.com/todos/${task.id}`,
+      task
+    );
+    dispatch({
+      type: GO_BACK,
+    });
+  } catch (error) {
+    dispatch({
+      type: ERROR,
+      payload: "Intente más tarde",
+    });
+  }
+  // console.groupEnd();
+};
+
+export const toogleToDo = (userId, taskId) => (dispatch, getState) => {
+  const { tasks } = getState().tasksReducer;
+  const task = tasks[userId][taskId];
+
+  const updatedTasks = {
+    ...tasks,
+  };
+  updatedTasks[userId] = {
+    ...tasks[userId],
+  };
+
+  updatedTasks[userId][taskId] = {
+    ...task,
+    completed: !task.completed,
+  };
+  dispatch({
+    type: UPDATE_TASKS,
+    payload: updatedTasks,
+  });
+};
+
+export const deleteTask = (task) => async (dispatch, getState) => {
+  // console.log("deleteTask task = ", task);
+  dispatch({
+    type: LOADING,
+  });
+  try {
+    await axios.delete(`https://jsonplaceholder.typicode.com/todos/${task.id}`);
+    dispatch({
+      type: GET_TASKS,
+      payload: {},
+    });
+  } catch (error) {
+    dispatch({
+      type: ERROR,
+      payload: "Intente más tarde",
+    });
+  }
 };

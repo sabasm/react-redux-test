@@ -12,6 +12,11 @@ function App() {
           <Route exact path="/users" element={<Users />} />
           <Route exact path="/tasks" element={<Tasks />} />
           <Route exact path="/tasks/addTask" element={<AddTask />} />
+          <Route
+            exact
+            path="/tasks/addTask/:editUId/:taskId"
+            element={<AddTask />}
+          />
           <Route exact path="/posts/:key" element={<Posts />} />
         </Routes>
       </div>

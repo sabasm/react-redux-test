@@ -4,6 +4,7 @@ import {
   ERROR,
   FORM_CHANGES,
   GO_BACK,
+  UPDATE_TASKS,
 } from "../types/tasksTypes.js";
 
 const initialState = {
@@ -26,6 +27,14 @@ export default function tasksReducer(state = initialState, action) {
         loading: true,
       };
     case GET_TASKS:
+      return {
+        ...state,
+        tasks: action.payload,
+        loading: false,
+        error: "",
+        goBack: false,
+      };
+    case UPDATE_TASKS:
       return {
         ...state,
         tasks: action.payload,
